@@ -1,88 +1,45 @@
-def tratar_projetos(entrada_projetos):
-    projetos = {}
-
-    for projeto in entrada_projetos:
-        projeto = projeto.replace('(', '').replace(')', '').replace(', ', ',').replace('\n', '')
-
-        codigo, numero_vagas, requisito = projeto.split(',')
-
-        projetos[codigo] = {
-            'vagas': int(numero_vagas),
-            'requisito': int(requisito),
-            'alunos_atribuidos': [],
-            'preferencias_alunos': [],
-            'preferencias_atuais': []
-        }
-
-    return projetos
-
-def tratar_alunos(entrada_alunos):
-    alunos = {}
-
-    for aluno in entrada_alunos:
-        aluno = aluno.replace('(', '').replace(')', '').replace(', ', ',').replace('\n', '').replace(' ', ',')
-
-        codigo_aluno, dados = aluno.split(':')
-
-        preferencias = dados.split(',')
-        nota = int(preferencias.pop(-1))
+def gale_shapley(homens, mulheres, preferencias_homens, preferencias_mulheres):
+    homem_para_mulher = {}
+    mulher_para_homem = {}
+    homens_livres = list(homens)
+    
+    while homens_livres:
+        homem = homens_livres.pop(0)
+        preferencias_homem = preferencias_homens[homem]
         
-        alunos[codigo_aluno] = {
-            'preferencias': preferencias,
-            'nota': nota,
-            'projeto_atribuido': None
-        }
+        for mulher in preferencias_homem:
+            namorado_atual = mulher_para_homem.get(mulher)
+            
+            if namorado_atual is None:
+                homem_para_mulher[homem] = mulher
+                mulher_para_homem[mulher] = homem
+                break
+            else:
+                preferencias_mulher = preferencias_mulheres[mulher]
+                if preferencias_mulher.index(namorado_atual) > preferencias_mulher.index(homem):
+                    homem_para_mulher[homem] = mulher
+                    mulher_para_homem[mulher] = homem
+                    homens_livres.append(namorado_atual)
+                    break
+    
+    return homem_para_mulher
 
-    return alunos
 
-def algoritmo_gale_shapley(projetos, alunos):
-    for projeto in projetos:
-        projetos[projeto]['preferencias_alunos'] = list(alunos.keys())
+# Exemplo de uso
+homens = ['H1', 'H2', 'H3']
+mulheres = ['M1', 'M2', 'M3']
+preferencias_homens = {
+    'H1': ['M1', 'M2', 'M3'],
+    'H2': ['M1', 'M3', 'M2'],
+    'H3': ['M3', 'M1', 'M2']
+}
+preferencias_mulheres = {
+    'M1': ['H2', 'H1', 'H3'],
+    'M2': ['H1', 'H3', 'H2'],
+    'M3': ['H1', 'H2', 'H3']
+}
 
-    while True:
-        alguem_aceito = False
-
-        for aluno, info_aluno in alunos.items():
-            if info_aluno['projeto_atribuido'] is None and len(info_aluno['preferencias']) > 0:
-                projeto_preferido = info_aluno['preferencias'][0]
-
-                if alunos[aluno]['nota'] >= projetos[projeto_preferido]['requisito']:
-                    projetos[projeto_preferido]['preferencias_atuais'].append(aluno)
-
-                    if len(projetos[projeto_preferido]['alunos_atribuidos']) < projetos[projeto_preferido]['vagas']:
-                        projetos[projeto_preferido]['alunos_atribuidos'].append(aluno)
-                        alunos[aluno]['projeto_atribuido'] = projeto_preferido
-                        del alunos[aluno]['preferencias'][0]
-                        alguem_aceito = True
-                    else:
-                        alunos_existentes = projetos[projeto_preferido]['alunos_atribuidos']
-                        aluno_troca = projetos[projeto_preferido]['preferencias_atuais'].index(aluno)
-                        for aluno_existente in alunos_existentes:
-                            if projetos[projeto_preferido]['preferencias_atuais'].index(aluno_existente) > aluno_troca:
-                                alunos[aluno_existente]['projeto_atribuido'] = None
-                                projetos[projeto_preferido]['alunos_atribuidos'].remove(aluno_existente)
-                                projetos[projeto_preferido]['alunos_atribuidos'].append(aluno)
-                                alunos[aluno]['projeto_atribuido'] = projeto_preferido
-                                del alunos[aluno]['preferencias'][0]
-                                alguem_aceito = True
-                                break
-
-        if not alguem_aceito:
-            break
-
-# Lendo o arquivo 'entradaProj2TAG.txt'
-with open('entradaProj2TAG.txt', 'r') as file:
-    linhas = file.readlines()
-    entrada_projetos = linhas[3:53]
-    entrada_alunos = linhas[56:259]
-
-# Tratando os dados de entrada
-projetos = tratar_projetos(entrada_projetos)
-alunos = tratar_alunos(entrada_alunos)
-
-# Chamada da função principal
-algoritmo_gale_shapley(projetos, alunos)
-
-# Exibindo os resultados
-for projeto, info_projeto in projetos.items():
-    print(f"Projeto {projeto}: {info_projeto['alunos_atribuidos']}")
+matches = gale_shapley(homens, mulheres, preferencias_homens, preferencias_mulheres)
+print("Casais formados:")
+for homem, mulher in matches.items():
+    print(f"{homem} e {mulher}")
