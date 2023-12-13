@@ -9,13 +9,16 @@ def tratar_alunos(entrada_alunos):
         
         codigo_aluno, dados_aluno = aluno.split(':')
 
-        preferencias = dados_aluno.split(' ')
+        preferencias, nota = dados_aluno.split(' ')
 
-        nota = int(preferencias.pop(-1))
+        nota = int(nota)
 
-        print(preferencias)
+        preferencias = preferencias.split(',')
 
         alunos[codigo_aluno] = {'preferencias': preferencias, 'nota': nota}
+
+    for item in alunos.items():
+        print(item)
 
     return alunos
 
