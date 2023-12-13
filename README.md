@@ -24,12 +24,12 @@ Certifique-se de ter o Python instalado em seu ambiente.
 2. Certifique-se de ter o arquivo `entradaProj2TAG.txt` na mesma pasta do código.
 3. Execute o arquivo `Projeto2_TAG.py`.
 
-#Para Windows:
+Para Windows:
 ```bash
 python Projeto2_TAG.py
 ```
 
-#Para macOS e Linux:
+Para macOS e Linux:
 ```bash
 python3 Projeto2_TAG.py
 ```
