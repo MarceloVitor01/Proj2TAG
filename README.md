@@ -27,7 +27,9 @@ Certifique-se de ter o Python instalado em seu ambiente.
 #Para Windows:
 ```bash
 python Projeto2_TAG.py
+```
 
 #Para macOS e Linux:
 ```bash
 python3 Projeto2_TAG.py
+```
