@@ -1,6 +1,6 @@
 # Projeto de Emparelhamento Máximo Estável
 
-Este projeto implementa um algoritmo de emparelhamento máximo estável para a alocação de alunos a projetos acadêmicos, seguindo os critérios e requisitos definidos.
+Este projeto implementa um algoritmo de emparelhamento máximo estável baseado no de Gale-Shapley para a alocação de alunos a projetos acadêmicos, seguindo os critérios e requisitos definidos.
 
 ## Descrição
 
